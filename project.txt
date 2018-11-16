@@ -1,0 +1,89 @@
+
+//Validation for account number
+ public boolean valid(long accnum) throws BankCustomerNotFound
+
+	    {
+     		boolean flag=false;
+	    
+	        //EntityManager entityManager = null;
+	        try {
+	        	
+	        	//entityManager =Persistence.createEntityManagerFactory("BankWallet").createEntityManager();
+	        	BankCustomer c=entityManager.find(Customer.class,accnum);
+	        	System.out.println(c);
+	        	if(c.getAccNumber()==accnum)
+	        	{
+	        		flag=true;
+	        	}
+	        	 return flag;
+	        	
+	       } catch(PersistenceException e) {
+				e.printStackTrace();
+				throw new CustomerNotFound(e.getMessage());
+			} finally {
+				entityManager.close();
+			}
+			}
+
+
+//testcases
+package com.capg.bw.test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
+
+import com.capg.bw.bean.Customer;
+import com.capg.bw.dao.CustomerDAOImp;
+import com.capg.bw.exception.CustomerNotFound;
+import com.capg.bw.service.CustomerServiceImp;
+
+public class TestClient extends BankCustomerServiceImp{
+	//Customer a = new Customer (null,"Chennai",1,45,"sneha@gmail.com","6574345234","8564234567",2000);
+	//Customer a = new Customer(null,"Chennai",1,21,"sneha@gmail.com","6543234312","8463913620",1500.0);
+	BankCustomer a = new Customer("Pavan","Hyderabad",2,20,"pavi@gmail.com","5643214321","9959473686",1000.0);
+	CustomerServiceImp c = new CustomerServiceImp();
+	
+	@Test
+	public void testCreateAccount() throws BankCustomerNotFound {
+		d.setCustName("Sneha");
+		boolean b =c.createAccount(d);
+		assertTrue(b==true);
+	}
+
+	@Test
+	public void testShowBalance() {
+		d.setCurrentBalance(1500);
+		assertEquals(1500, d.getBalance(),0.2);
+	}
+
+	@Test
+	public void testDeposit() throws BankCustomerNotFound {
+		//d.getBalance(1000);
+		double e=c.deposit(b,1000);
+	    assertEquals(2000, b.getBalance(),0.2);
+	}
+
+	@Test
+	public void testWithDraw() throws BankCustomerNotFound {
+		double withdraw=c.withDraw(b,200);
+		assertEquals(800,b.getBalance(),0.2);
+	}
+
+	@Test
+	public void testFundTransfer() throws BankCustomerNotFound {
+		double a3= c.fundTransfer(d,b,1000);
+		assertEquals(2500, d.getBalance(),0.1);
+		assertNotEquals(1000,b.getBalance(),0.1);
+	}
+
+	@Test
+	public void testPrintTransactions() {
+		fail("Not yet implemented");
+	}
+
+}
+ 
